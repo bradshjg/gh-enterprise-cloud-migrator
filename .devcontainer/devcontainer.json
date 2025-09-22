@@ -1,0 +1,17 @@
+{
+  "build": {
+    "dockerfile": "../Dockerfile",
+    "target": "dev",
+    "options": [
+      "--secret=id=build-secrets,src=./.env.build"
+    ]
+  },
+  "customizations": {
+    "vscode": {
+        "extensions": [
+            "golang.Go",
+            "a-h.templ"
+        ]
+    }
+  }
+}

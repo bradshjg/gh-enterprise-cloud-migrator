@@ -1,0 +1,5 @@
+.env
+.env.build
+
+# gei leaves a lot of trash laying around :-)
+*octoshift*
