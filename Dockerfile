@@ -1,8 +1,16 @@
 # syntax=docker/dockerfile:1
 
-FROM mcr.microsoft.com/devcontainers/go AS dev
+FROM mcr.microsoft.com/devcontainers/go:bookworm AS dev
 
 USER vscode
+
+RUN . /etc/os-release && \
+    curl -fsSL https://packages.microsoft.com/config/debian/$VERSION_ID/packages-microsoft-prod.deb > ms-packages.deb \
+    && sudo dpkg -i ms-packages.deb \
+    && sudo apt-get update \
+    && sudo apt-get install -y --no-install-recommends powershell-lts \
+    && sudo rm -rf /var/lib/apt/lists/* \
+    && rm ms-packages.deb
 
 RUN go install github.com/a-h/templ/cmd/templ@v0.3.943
 
@@ -31,10 +39,8 @@ ENV HOME=/home/default
 
 RUN useradd -u 1001 -r -g 0 -d ${HOME} -c "Default Application User" default
 
-RUN INSTALL_PKGS="libicu" \
-    && yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS \
-    && rpm -V $INSTALL_PKGS \
-    && yum -y clean all --enablerepo='*'
+RUN dnf install -y https://github.com/PowerShell/PowerShell/releases/download/v7.5.3/powershell-7.5.3-1.rh.x86_64.rpm \
+    && dnf clean all
 
 COPY --from=dev /usr/bin/gh /usr/bin/gh
 COPY --from=dev /home/vscode/.local/share/gh/extensions/gh-gei ${HOME}/.local/share/gh/extensions/gh-gei
