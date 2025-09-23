@@ -1,0 +1,28 @@
+package views
+
+type OrgFormData struct {
+    Orgs []string
+    Source bool
+}
+
+templ OrgsForm(data OrgFormData) {
+    if data.Source {
+        <div style="display: flex; "></div>
+        <select name="source-org" hx-get="/source-repos" hx-trigger="change" hx-target="#source-repos" style="width: 15em;">
+            <option></option>
+        for _, org := range data.Orgs {
+            <option>{ org }</option>
+        }
+        </select>
+        <select name="source-repos" id="source-repos" style="width: 15em;">
+            <option></option>
+        </select>
+    } else {
+        <select name="target-org" style="width: 15em;">
+            <option></option>
+        for _, org := range data.Orgs {
+            <option>{ org }</option>
+        }
+        </select>
+    }
+}

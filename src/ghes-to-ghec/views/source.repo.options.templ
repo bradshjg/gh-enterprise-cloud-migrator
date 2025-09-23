@@ -1,0 +1,12 @@
+package views
+
+type SourceRepoOptionsData struct {
+    Repos []string
+}
+
+templ SourceRepoOptions(data SourceRepoOptionsData) {
+    <option></option>
+for _, repo := range data.Repos {
+    <option>{ repo }</option>
+}
+}

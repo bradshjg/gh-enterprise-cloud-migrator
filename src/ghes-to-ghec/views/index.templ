@@ -1,0 +1,31 @@
+package views
+
+type IndexData struct {
+	SourceAuthenticated bool
+	TargetAuthenticated bool
+}
+
+templ IndexContent(data IndexData) {
+	<div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10em; width: 60%; margin-left: auto; margin-right: auto;">
+        <div>
+        if !data.SourceAuthenticated {
+            <a data-testid="auth" href="/github-source/login">Authorize the OAuth app for your source org!</a>
+        } else {
+            <div hx-get="/source-orgs" hx-trigger="load"></div>
+        }
+        </div>
+        <div>
+        if !data.TargetAuthenticated {
+            <a data-testid="auth" href="/github-target/login">Authorize the OAuth app for your target org!</a>
+        } else {
+            <div hx-get="/target-orgs" hx-trigger="load"></div>
+        }
+        </div>
+	</div>
+}
+
+templ Index(data IndexData) {
+	@Base() {
+		@IndexContent(data)
+	}
+}
