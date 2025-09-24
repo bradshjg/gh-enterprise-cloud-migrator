@@ -8,22 +8,22 @@ type OrgFormData struct {
 templ OrgsForm(data OrgFormData) {
     if data.Source {
         <div style="display: flex; flex-direction: column;">
-            <label for="source org">source org</label>
-                <select name="source-org" id="source-org" hx-get="/source-repos" hx-trigger="change" hx-target="#source-repos" style="width: 15em; margin-top: 1em;">
+            <label for="source-org">source org</label>
+                <select name="source-org" id="source-org" required hx-get="/source-repos" hx-trigger="change" hx-target="#source-repo" style="width: 15em; margin-top: 1em;">
                     <option></option>
                 for _, org := range data.Orgs {
                     <option>{ org }</option>
                 }
                 </select>
-            <label for="source-repos" style="margin-top: 2em;">source repo/s</label>
-            <select name="source-repos" multiple="true" id="source-repos" style="width: 15em; margin-top: 1em;">
+            <label for="source-repo" style="margin-top: 2em;">source repo (use blank for all repos)</label>
+            <select name="source-repo" id="source-repo" style="width: 15em; margin-top: 1em;">
                 <option></option>
             </select>
         </div>
     } else {
         <div style="display: flex; flex-direction: column;">
             <label for="target-org">target-org</label>
-            <select name="target-org" id="target-org" style="width: 15em; margin-top: 1em;">
+            <select name="target-org" id="target-org" required style="width: 15em; margin-top: 1em;">
                 <option></option>
             for _, org := range data.Orgs {
                 <option>{ org }</option>

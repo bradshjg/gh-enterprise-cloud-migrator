@@ -1,0 +1,19 @@
+package views
+
+type RunData struct {
+    Token string
+}
+
+templ RunContent(r RunData) {
+    <form hx-get="/output" hx-target="#output-container" hx-swap="beforeend" hx-trigger="every 1s">
+        <input type="hidden" name="token" value={ r.Token }>
+    </form>
+
+    <p id="output-container"></p>
+}
+
+templ Run(r RunData) {
+    @Base() {
+        @RunContent(r)
+    }
+}

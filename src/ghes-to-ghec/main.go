@@ -41,7 +41,8 @@ func main() {
 	mh := handlers.NewMigratorHandler(ms)
 
 	e.GET("/", mh.IndexHandler)
-	e.POST("/run", mh.RunHandler)
+	e.POST("/run", mh.StartRunHandler)
+	e.GET("/run", mh.RunHandler)
 	e.GET("/output", mh.OutputHandler)
 	e.GET("/source-orgs", ghs.OrgsHandler)
 	e.GET("/source-repos", ghs.ReposHandler)

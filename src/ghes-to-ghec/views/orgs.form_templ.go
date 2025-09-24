@@ -35,7 +35,7 @@ func OrgsForm(data OrgFormData) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		if data.Source {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div style=\"display: flex; flex-direction: column;\"><label for=\"source org\">source org</label> <select name=\"source-org\" id=\"source-org\" hx-get=\"/source-repos\" hx-trigger=\"change\" hx-target=\"#source-repos\" style=\"width: 15em; margin-top: 1em;\"><option></option> ")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div style=\"display: flex; flex-direction: column;\"><label for=\"source-org\">source org</label> <select name=\"source-org\" id=\"source-org\" required hx-get=\"/source-repos\" hx-trigger=\"change\" hx-target=\"#source-repo\" style=\"width: 15em; margin-top: 1em;\"><option></option> ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -58,12 +58,12 @@ func OrgsForm(data OrgFormData) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</select> <label for=\"source-repos\" style=\"margin-top: 2em;\">source repo/s</label> <select name=\"source-repos\" multiple=\"true\" id=\"source-repos\" style=\"width: 15em; margin-top: 1em;\"><option></option></select></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</select> <label for=\"source-repo\" style=\"margin-top: 2em;\">source repo (use blank for all repos)</label> <select name=\"source-repo\" id=\"source-repo\" style=\"width: 15em; margin-top: 1em;\"><option></option></select></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<div style=\"display: flex; flex-direction: column;\"><label for=\"target-org\">target-org</label> <select name=\"target-org\" id=\"target-org\" style=\"width: 15em; margin-top: 1em;\"><option></option> ")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<div style=\"display: flex; flex-direction: column;\"><label for=\"target-org\">target-org</label> <select name=\"target-org\" id=\"target-org\" required style=\"width: 15em; margin-top: 1em;\"><option></option> ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

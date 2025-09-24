@@ -1,0 +1,11 @@
+package views
+
+type OutputData struct {
+    Lines []string
+}
+
+templ Output(d OutputData) {
+    for _, line := range(d.Lines) {
+        <pre><code>{ line }</code></pre>
+    }
+}
