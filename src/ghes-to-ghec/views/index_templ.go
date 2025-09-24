@@ -34,7 +34,7 @@ func IndexContent(data IndexData) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div style=\"display: flex; align-items: center; justify-content: space-between; margin-top: 10em; width: 60%; margin-left: auto; margin-right: auto;\"><div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div style=\"display: flex; align-items: flex-start; justify-content: space-between; margin-top: 10em; width: 50%; margin-left: auto; margin-right: auto;\"><div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

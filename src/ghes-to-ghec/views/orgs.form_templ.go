@@ -35,7 +35,7 @@ func OrgsForm(data OrgFormData) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		if data.Source {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div style=\"display: flex; \"></div><select name=\"source-org\" hx-get=\"/source-repos\" hx-trigger=\"change\" hx-target=\"#source-repos\" style=\"width: 15em;\"><option></option> ")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div style=\"display: flex; flex-direction: column;\"><label for=\"source org\">source org</label> <select name=\"source-org\" id=\"source-org\" hx-get=\"/source-repos\" hx-trigger=\"change\" hx-target=\"#source-repos\" style=\"width: 15em; margin-top: 1em;\"><option></option> ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -47,7 +47,7 @@ func OrgsForm(data OrgFormData) templ.Component {
 				var templ_7745c5c3_Var2 string
 				templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(org)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/orgs.form.templ`, Line: 14, Col: 25}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/orgs.form.templ`, Line: 15, Col: 33}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 				if templ_7745c5c3_Err != nil {
@@ -58,12 +58,12 @@ func OrgsForm(data OrgFormData) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</select> <select name=\"source-repos\" id=\"source-repos\" style=\"width: 15em;\"><option></option></select>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</select> <label for=\"source-repos\" style=\"margin-top: 2em;\">source repo/s</label> <select name=\"source-repos\" multiple=\"true\" id=\"source-repos\" style=\"width: 15em; margin-top: 1em;\"><option></option></select></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<select name=\"target-org\" style=\"width: 15em;\"><option></option> ")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<div style=\"display: flex; flex-direction: column;\"><label for=\"target-org\">target-org</label> <select name=\"target-org\" id=\"target-org\" style=\"width: 15em; margin-top: 1em;\"><option></option> ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -75,7 +75,7 @@ func OrgsForm(data OrgFormData) templ.Component {
 				var templ_7745c5c3_Var3 string
 				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(org)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/orgs.form.templ`, Line: 24, Col: 25}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/orgs.form.templ`, Line: 29, Col: 29}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 				if templ_7745c5c3_Err != nil {
@@ -86,7 +86,7 @@ func OrgsForm(data OrgFormData) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</select>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</select></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
