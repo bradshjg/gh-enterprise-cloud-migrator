@@ -10,26 +10,14 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type ClientType int
+type ClientType string
 
 const (
-	Source ClientType = iota
-	Target
+	Source ClientType = "source"
+	Target ClientType = "target"
 )
 
-func (e ClientType) String() string {
-	switch e {
-	case Source:
-		return "source"
-	case Target:
-		return "destination"
-	default:
-		return "unknown"
-	}
-}
-
 type GitHubService interface {
-	ClearSession(c echo.Context)
 	Token(c echo.Context, t ClientType) (string, error)
 	Orgs(c echo.Context, t ClientType) ([]string, error)
 	Repos(c echo.Context, t ClientType, org string) ([]string, error)
@@ -44,10 +32,6 @@ func NewGitHubService(tokenService TokenService) *GitHubAPIService {
 
 type GitHubAPIService struct {
 	tokenService TokenService
-}
-
-func (gs *GitHubAPIService) ClearSession(c echo.Context) {
-	gs.tokenService.ClearTokens(c)
 }
 
 func (gs *GitHubAPIService) Token(c echo.Context, t ClientType) (string, error) {

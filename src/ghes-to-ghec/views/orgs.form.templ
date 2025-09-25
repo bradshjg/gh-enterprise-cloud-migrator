@@ -13,7 +13,7 @@ templ OrgsForm(data OrgFormData) {
     if data.ClientType == services.Source {
         <div style="display: flex; flex-direction: column;">
             <label for="source-org">source org</label>
-                <select name="source-org" id="source-org" required hx-get="/source-repos" hx-trigger="change" hx-target="#source-repo" style="width: 15em; margin-top: 1em;">
+                <select name="source-org" id="source-org" required hx-get="/repos" hx-trigger="change" hx-target="#source-repo" style="width: 15em; margin-top: 1em;">
                     <option></option>
                 for _, org := range data.Orgs {
                     <option>{ org }</option>

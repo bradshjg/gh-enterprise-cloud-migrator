@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -22,15 +23,27 @@ type MigratorHandler struct {
 
 func (fh *MigratorHandler) IndexHandler(c echo.Context) error {
 	sourceErr := fh.migratorService.ValidToken(c, services.Source)
+	var sourceErrMessage string
+	if sourceErr != nil {
+		sourceErrMessage = sourceErr.Error()
+	}
 	targetErr := fh.migratorService.ValidToken(c, services.Target)
+	var targetErrMessage string
+	if targetErr != nil {
+		targetErrMessage = targetErr.Error()
+	}
 	indexData := views.IndexData{
 		Source: views.AuthenticationData{
-			Valid:   sourceErr == nil,
-			Message: sourceErr.Error(),
+			ClientType: services.Source,
+			Exists:     !errors.Is(sourceErr, services.ErrTokenNotFound),
+			Valid:      sourceErr == nil,
+			ErrMessage: sourceErrMessage,
 		},
 		Target: views.AuthenticationData{
-			Valid:   targetErr == nil,
-			Message: targetErr.Error(),
+			ClientType: services.Target,
+			Exists:     !errors.Is(targetErr, services.ErrTokenNotFound),
+			Valid:      targetErr == nil,
+			ErrMessage: targetErrMessage,
 		},
 	}
 	return renderView(c, views.Index(indexData))

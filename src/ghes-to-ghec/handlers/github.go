@@ -40,8 +40,7 @@ func (gh *GitHubHandler) OrgsHandler(c echo.Context) error {
 }
 
 type Org struct {
-	Name       string              `query:"source-org"`
-	ClientType services.ClientType `query:"client"`
+	Name string `query:"source-org"`
 }
 
 func (gh *GitHubHandler) ReposHandler(c echo.Context) error {
@@ -56,7 +55,7 @@ func (gh *GitHubHandler) ReposHandler(c echo.Context) error {
 		}
 		return renderView(c, views.SourceRepoOptions(data))
 	}
-	repos, err := gh.githubService.Repos(c, org.ClientType, org.Name)
+	repos, err := gh.githubService.Repos(c, services.Source, org.Name)
 	if err != nil {
 		return err
 	}

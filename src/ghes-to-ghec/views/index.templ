@@ -7,8 +7,10 @@ import (
 )
 
 type AuthenticationData struct {
+    ClientType services.ClientType
+    Exists bool
     Valid bool
-    Message string
+    ErrMessage string
 }
 
 type IndexData struct {
@@ -36,41 +38,39 @@ templ indexFormWrapper() {
     </form>
 }
 
-templ tokenForm(clientType services.ClientType, data AuthenticationData) {
-        <p>{data.Message}</p>
+templ token(data AuthenticationData) {
+    <div>
+        if !data.Valid {
+            @tokenForm(data)
+        } else {
+            <div hx-get="/orgs" hx-trigger="load" hx-include="find [name='client']">
+                <input type="hidden" name="client" value={data.ClientType} />
+            </div>
+        }
+    </div>
+}
+
+templ tokenForm(data AuthenticationData) {
         <form method="post" action="/token">
-            <label for={clientType}>
-                <a href={tokenURL(clientType)} target="_blank" rel="noopener noreferrer">
-                    {clientType} PAT
+            <label for={data.ClientType}>
+                <a href={tokenURL(data.ClientType)} target="_blank" rel="noopener noreferrer">
+                    {data.ClientType} PAT
                 </a>
                 (repo, admin:org, workflow scopes)
             </label>
-            <input type="hidden" name="client" type={clientType.String()} />
-            <input id={clientType} name="token" type="password" required style="margin-top: 1em;"/>
+            <input type="hidden" name="client" value={data.ClientType} />
+            <input id={data.ClientType} name="token" type="password" required style="margin-top: 1em;"/>
             <button type="submit">set</button>
         </form>
+        if (data.Exists) {
+            <p style="color: red">{data.ErrMessage}</p>
+        }
 }
 
 templ indexContent(data IndexData) {
     <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-top: 10em; width: 50%; margin-left: auto; margin-right: auto;">
-        <div>
-        if !data.Source.Valid {
-            @tokenForm(services.Source, data.Source)
-        } else {
-            <form hx-get="/orgs" hx-trigger="load">
-                <input type="hidden" name="client" type="source" />
-            </form>
-        }
-        </div>
-        <div>
-        if !data.Target.Valid {
-            @tokenForm(services.Target, data.Source)
-        } else {
-            <form hx-get="/orgs" hx-trigger="load">
-                <input type="hidden" name="client" type="target" />
-            </form>
-        }
-        </div>
+        @token(data.Source)
+        @token(data.Target)
     </div>
 }
 

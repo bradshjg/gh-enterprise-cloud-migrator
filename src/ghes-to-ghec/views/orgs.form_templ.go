@@ -39,7 +39,7 @@ func OrgsForm(data OrgFormData) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		if data.ClientType == services.Source {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div style=\"display: flex; flex-direction: column;\"><label for=\"source-org\">source org</label> <select name=\"source-org\" id=\"source-org\" required hx-get=\"/source-repos\" hx-trigger=\"change\" hx-target=\"#source-repo\" style=\"width: 15em; margin-top: 1em;\"><option></option> ")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div style=\"display: flex; flex-direction: column;\"><label for=\"source-org\">source org</label> <select name=\"source-org\" id=\"source-org\" required hx-get=\"/repos\" hx-trigger=\"change\" hx-target=\"#source-repo\" style=\"width: 15em; margin-top: 1em;\"><option></option> ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
