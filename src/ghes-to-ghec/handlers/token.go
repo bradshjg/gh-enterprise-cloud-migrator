@@ -38,3 +38,8 @@ func (th *TokenHandler) TokenHandler(c echo.Context) error {
 	}
 	return c.Redirect(http.StatusFound, "/")
 }
+
+func (th *TokenHandler) ResetTokensHandler(c echo.Context) error {
+	th.tokenService.ClearSession(c)
+	return c.Redirect(http.StatusFound, "/")
+}

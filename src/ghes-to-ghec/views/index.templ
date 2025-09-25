@@ -39,7 +39,7 @@ templ indexFormWrapper() {
 }
 
 templ token(data AuthenticationData) {
-    <div>
+    <div style="width: 30%;">
         if !data.Valid {
             @tokenForm(data)
         } else {
@@ -50,17 +50,27 @@ templ token(data AuthenticationData) {
     </div>
 }
 
+templ clearTokensForm() {
+    <form method="post" action="/tokens/reset" style="display: flex; justify-content: center; margin-top: 2em;">
+        <button type="submit">reset tokens</button>
+    </form>
+}
+
 templ tokenForm(data AuthenticationData) {
         <form method="post" action="/token">
-            <label for={data.ClientType}>
-                <a href={tokenURL(data.ClientType)} target="_blank" rel="noopener noreferrer">
-                    {data.ClientType} PAT
-                </a>
-                (repo, admin:org, workflow scopes)
-            </label>
-            <input type="hidden" name="client" value={data.ClientType} />
-            <input id={data.ClientType} name="token" type="password" required style="margin-top: 1em;"/>
-            <button type="submit">set</button>
+            <div style="display: flex; flex-direction: column;">
+                <label for={data.ClientType}>
+                    <a href={tokenURL(data.ClientType)} target="_blank" rel="noopener noreferrer">
+                        {data.ClientType} PAT
+                    </a>
+                    (repo, admin:org, workflow scopes)
+                </label>
+                <div>
+                    <input type="hidden" name="client" value={data.ClientType} />
+                    <input id={data.ClientType} name="token" type="password" required style="margin-top: 1em;"/>
+                    <button type="submit">set</button>
+                </div>
+            </div>
         </form>
         if (data.Exists) {
             <p style="color: red">{data.ErrMessage}</p>
@@ -82,6 +92,9 @@ templ Index(data IndexData) {
             }
         } else {
 		    @indexContent(data)
+        }
+        if (data.Source.Exists || data.Target.Exists) {
+            @clearTokensForm()
         }
 	}
 }

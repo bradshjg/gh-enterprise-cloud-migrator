@@ -43,6 +43,7 @@ func main() {
 	e.GET("/run", mh.RunHandler)
 	e.GET("/output", mh.OutputHandler)
 	e.POST("/token", th.TokenHandler)
+	e.POST("/tokens/reset", th.ResetTokensHandler)
 	e.GET("/orgs", gh.OrgsHandler)
 	e.GET("/repos", gh.ReposHandler)
 	e.GET("/*", handlers.RouteNotFoundHandler)

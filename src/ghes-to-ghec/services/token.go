@@ -37,15 +37,15 @@ type TokenServiceImpl struct {
 	sessionName  string
 }
 
-func (os *TokenServiceImpl) ClearSession(c echo.Context) {
-	session, _ := os.sessionStore.Get(c.Request(), sessionName)
+func (ts *TokenServiceImpl) ClearSession(c echo.Context) {
+	session, _ := ts.sessionStore.Get(c.Request(), sessionName)
 	session.Options.MaxAge = -1
 
-	os.sessionStore.Save(c.Request(), c.Response(), session)
+	ts.sessionStore.Save(c.Request(), c.Response(), session)
 }
 
-func (os *TokenServiceImpl) StoreToken(c echo.Context, t Token) error {
-	session, err := os.sessionStore.Get(c.Request(), os.sessionName)
+func (ts *TokenServiceImpl) StoreToken(c echo.Context, t Token) error {
+	session, err := ts.sessionStore.Get(c.Request(), ts.sessionName)
 	if err != nil {
 		return err
 	}
@@ -57,10 +57,10 @@ func (os *TokenServiceImpl) StoreToken(c echo.Context, t Token) error {
 	return session.Save(c.Request(), c.Response())
 }
 
-func (os *TokenServiceImpl) Token(c echo.Context, e ClientType) (Token, error) {
-	session, err := os.sessionStore.Get(c.Request(), os.sessionName)
+func (ts *TokenServiceImpl) Token(c echo.Context, e ClientType) (Token, error) {
+	session, err := ts.sessionStore.Get(c.Request(), ts.sessionName)
 	if err != nil {
-		os.ClearSession(c)
+		ts.ClearSession(c)
 		return Token{}, ErrTokenNotFound
 	}
 	tokenJSON, ok := session.Values[string(e)].([]byte)
