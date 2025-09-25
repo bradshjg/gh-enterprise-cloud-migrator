@@ -21,9 +21,17 @@ type MigratorHandler struct {
 }
 
 func (fh *MigratorHandler) IndexHandler(c echo.Context) error {
+	sourceErr := fh.migratorService.ValidToken(c, services.Source)
+	targetErr := fh.migratorService.ValidToken(c, services.Target)
 	indexData := views.IndexData{
-		SourceAuthenticated: fh.migratorService.SourceAuthenticated(c),
-		TargetAuthenticated: fh.migratorService.TargetAuthenticated(c),
+		Source: views.AuthenticationData{
+			Valid:   sourceErr == nil,
+			Message: sourceErr.Error(),
+		},
+		Target: views.AuthenticationData{
+			Valid:   targetErr == nil,
+			Message: targetErr.Error(),
+		},
 	}
 	return renderView(c, views.Index(indexData))
 }

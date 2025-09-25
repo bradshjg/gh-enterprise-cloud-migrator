@@ -10,6 +10,8 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"slices"
+	"strings"
 	"sync"
 
 	"github.com/labstack/echo/v4"
@@ -22,33 +24,43 @@ var (
 
 var ErrMigrationInProgress = errors.New("migration in progress")
 
+func ErrMissingScopes(scopes []string) error {
+	return fmt.Errorf("missing scopes: %s", strings.Join(scopes, ", "))
+}
+
 type MigratorService interface {
-	SourceAuthenticated(c echo.Context) bool
-	TargetAuthenticated(c echo.Context) bool
+	ValidToken(c echo.Context, t ClientType) error
 	Run(m Migration) (string, error)
 	Output(token string) ([]string, bool, error)
 }
 
-func NewMigratorService(s GitHubService, t GitHubService) MigratorService {
+func NewMigratorService(gs GitHubService) MigratorService {
 	return &MigratorServiceImpl{
-		sourceGitHubService: s,
-		targetGitHubService: t,
+		gitHubService: gs,
 	}
 }
 
 type MigratorServiceImpl struct {
-	sourceGitHubService GitHubService
-	targetGitHubService GitHubService
+	gitHubService GitHubService
 }
 
-func (ms *MigratorServiceImpl) SourceAuthenticated(c echo.Context) bool {
-	_, err := ms.sourceGitHubService.AccessToken(c)
-	return err == nil
-}
+func (ms *MigratorServiceImpl) ValidToken(c echo.Context, t ClientType) error {
+	requiredScopes := []string{"repo", "admin:org", "workflow"}
+	scopes, err := ms.gitHubService.Scopes(c, t)
+	if err != nil {
+		return err
+	}
+	var missingScopes []string
+	for _, scope := range requiredScopes {
+		if !slices.Contains(scopes, scope) {
+			missingScopes = append(missingScopes, scope)
+		}
+	}
 
-func (ms *MigratorServiceImpl) TargetAuthenticated(c echo.Context) bool {
-	_, err := ms.targetGitHubService.AccessToken(c)
-	return err == nil
+	if len(missingScopes) != 0 {
+		return ErrMissingScopes(missingScopes)
+	}
+	return nil
 }
 
 type Migration struct {
@@ -90,11 +102,11 @@ func (ms *MigratorServiceImpl) run(m Migration) error {
 	} else {
 		return ErrMigrationInProgress
 	}
-	sourceToken, err := ms.sourceGitHubService.AccessToken(m.Context)
+	sourceToken, err := ms.gitHubService.Token(m.Context, Source)
 	if err != nil {
 		return err
 	}
-	targetToken, err := ms.targetGitHubService.AccessToken(m.Context)
+	targetToken, err := ms.gitHubService.Token(m.Context, Target)
 	if err != nil {
 		return err
 	}

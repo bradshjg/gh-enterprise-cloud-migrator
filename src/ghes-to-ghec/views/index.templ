@@ -1,36 +1,87 @@
 package views
 
-type IndexData struct {
-	SourceAuthenticated bool
-	TargetAuthenticated bool
+import (
+    "os"
+
+    "github.com/bradshjg/gh-enterprise-server-to-enterprise-cloud-migrator/services"
+)
+
+type AuthenticationData struct {
+    Valid bool
+    Message string
 }
 
-templ IndexContent(data IndexData) {
+type IndexData struct {
+	Source AuthenticationData
+	Target AuthenticationData
+}
+
+func tokenURL(clientType services.ClientType) string {
+    var url string
+    if clientType == services.Source {
+        url = os.Getenv("GITHUB_SOURCE_TOKEN_URL")
+    }
+    if url == "" {
+        return "https://github.com/settings/tokens/new"
+    }
+    return url
+}
+
+templ indexFormWrapper() {
     <form method="post" action="/run">
-        <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-top: 10em; width: 50%; margin-left: auto; margin-right: auto;">
-            <div>
-            if !data.SourceAuthenticated {
-                <a data-testid="auth" href="/github-source/login">Authorize the OAuth app for your source org!</a>
-            } else {
-                <div hx-get="/source-orgs" hx-trigger="load"></div>
-            }
-            </div>
-            <div>
-            if !data.TargetAuthenticated {
-                <a data-testid="auth" href="/github-target/login">Authorize the OAuth app for your target org!</a>
-            } else {
-                <div hx-get="/target-orgs" hx-trigger="load"></div>
-            }
-            </div>
-        </div>
+        {children...}
         <div style="display: flex; justify-content: center; margin-top: 5em;">
             <button type="submit">start migration</button>
         </div>
     </form>
 }
 
+templ tokenForm(clientType services.ClientType, data AuthenticationData) {
+        <p>{data.Message}</p>
+        <form method="post" action="/token">
+            <label for={clientType}>
+                <a href={tokenURL(clientType)} target="_blank" rel="noopener noreferrer">
+                    {clientType} PAT
+                </a>
+                (repo, admin:org, workflow scopes)
+            </label>
+            <input type="hidden" name="client" type={clientType.String()} />
+            <input id={clientType} name="token" type="password" required style="margin-top: 1em;"/>
+            <button type="submit">set</button>
+        </form>
+}
+
+templ indexContent(data IndexData) {
+    <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-top: 10em; width: 50%; margin-left: auto; margin-right: auto;">
+        <div>
+        if !data.Source.Valid {
+            @tokenForm(services.Source, data.Source)
+        } else {
+            <form hx-get="/orgs" hx-trigger="load">
+                <input type="hidden" name="client" type="source" />
+            </form>
+        }
+        </div>
+        <div>
+        if !data.Target.Valid {
+            @tokenForm(services.Target, data.Source)
+        } else {
+            <form hx-get="/orgs" hx-trigger="load">
+                <input type="hidden" name="client" type="target" />
+            </form>
+        }
+        </div>
+    </div>
+}
+
 templ Index(data IndexData) {
 	@Base() {
-		@IndexContent(data)
+        if (data.Source.Valid && data.Target.Valid) {
+            @indexFormWrapper() {
+                @indexContent(data)
+            }
+        } else {
+		    @indexContent(data)
+        }
 	}
 }

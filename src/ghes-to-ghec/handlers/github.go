@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/bradshjg/gh-enterprise-server-to-enterprise-cloud-migrator/services"
@@ -9,34 +8,40 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func NewGitHubHandler(oauthService services.OAuthService, githubService services.GitHubService, isSource bool) *GitHubHandler {
+func NewGitHubHandler(githubService services.GitHubService) *GitHubHandler {
 	return &GitHubHandler{
-		oauthService:  oauthService,
 		githubService: githubService,
-		isSource:      isSource,
 	}
 }
 
 type GitHubHandler struct {
-	oauthService  services.OAuthService
 	githubService services.GitHubService
-	isSource      bool
+}
+
+type OrgsQuery struct {
+	ClientType services.ClientType `query:"client"`
 }
 
 func (gh *GitHubHandler) OrgsHandler(c echo.Context) error {
-	orgs, err := gh.githubService.Orgs(c)
+	orgsQuery := new(OrgsQuery)
+	err := c.Bind(orgsQuery)
+	if err != nil {
+		return err
+	}
+	orgs, err := gh.githubService.Orgs(c, orgsQuery.ClientType)
 	if err != nil {
 		return err
 	}
 	data := views.OrgFormData{
-		Orgs:   orgs,
-		Source: gh.isSource,
+		Orgs:       orgs,
+		ClientType: orgsQuery.ClientType,
 	}
 	return renderView(c, views.OrgsForm(data))
 }
 
 type Org struct {
-	Name string `query:"source-org"`
+	Name       string              `query:"source-org"`
+	ClientType services.ClientType `query:"client"`
 }
 
 func (gh *GitHubHandler) ReposHandler(c echo.Context) error {
@@ -51,7 +56,7 @@ func (gh *GitHubHandler) ReposHandler(c echo.Context) error {
 		}
 		return renderView(c, views.SourceRepoOptions(data))
 	}
-	repos, err := gh.githubService.Repos(c, org.Name)
+	repos, err := gh.githubService.Repos(c, org.ClientType, org.Name)
 	if err != nil {
 		return err
 	}
@@ -59,20 +64,4 @@ func (gh *GitHubHandler) ReposHandler(c echo.Context) error {
 		Repos: repos,
 	}
 	return renderView(c, views.SourceRepoOptions(data))
-}
-
-func (gh *GitHubHandler) OAuthHandler(c echo.Context) error {
-	redirectURL, err := gh.oauthService.RedirectURL(c)
-	if err != nil {
-		return fmt.Errorf("error generating redirect url: %w", err)
-	}
-	return c.Redirect(http.StatusFound, redirectURL)
-}
-
-func (gh *GitHubHandler) OAuthCallbackHandler(c echo.Context) error {
-	err := gh.oauthService.StoreToken(c)
-	if err != nil {
-		return fmt.Errorf("error storing token in oauth callback: %w", err)
-	}
-	return c.Redirect(http.StatusFound, "/")
 }

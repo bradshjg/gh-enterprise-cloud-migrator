@@ -1,12 +1,16 @@
 package views
 
+import (
+    "github.com/bradshjg/gh-enterprise-server-to-enterprise-cloud-migrator/services"
+)
+
 type OrgFormData struct {
-    Orgs []string
-    Source bool
+	Orgs       []string
+	ClientType services.ClientType
 }
 
 templ OrgsForm(data OrgFormData) {
-    if data.Source {
+    if data.ClientType == services.Source {
         <div style="display: flex; flex-direction: column;">
             <label for="source-org">source org</label>
                 <select name="source-org" id="source-org" required hx-get="/source-repos" hx-trigger="change" hx-target="#source-repo" style="width: 15em; margin-top: 1em;">

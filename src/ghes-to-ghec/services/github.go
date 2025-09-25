@@ -3,35 +3,64 @@ package services
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/google/go-github/v74/github"
+	githubClient "github.com/google/go-github/v74/github"
 	"github.com/labstack/echo/v4"
 )
 
-type GitHubService interface {
-	ClearSession(c echo.Context)
-	Orgs(c echo.Context) ([]string, error)
-	Repos(c echo.Context, org string) ([]string, error)
-	AccessToken(c echo.Context) (string, error)
+type ClientType int
+
+const (
+	Source ClientType = iota
+	Target
+)
+
+func (e ClientType) String() string {
+	switch e {
+	case Source:
+		return "source"
+	case Target:
+		return "destination"
+	default:
+		return "unknown"
+	}
 }
 
-func NewGitHubService(oauthService OAuthService) *GitHubAPIService {
+type GitHubService interface {
+	ClearSession(c echo.Context)
+	Token(c echo.Context, t ClientType) (string, error)
+	Orgs(c echo.Context, t ClientType) ([]string, error)
+	Repos(c echo.Context, t ClientType, org string) ([]string, error)
+	Scopes(c echo.Context, t ClientType) ([]string, error)
+}
+
+func NewGitHubService(tokenService TokenService) *GitHubAPIService {
 	return &GitHubAPIService{
-		oauthService: oauthService,
+		tokenService: tokenService,
 	}
 }
 
 type GitHubAPIService struct {
-	oauthService OAuthService
+	tokenService TokenService
 }
 
 func (gs *GitHubAPIService) ClearSession(c echo.Context) {
-	gs.oauthService.ClearSession(c)
+	gs.tokenService.ClearTokens(c)
 }
 
-func (gs *GitHubAPIService) Orgs(c echo.Context) ([]string, error) {
+func (gs *GitHubAPIService) Token(c echo.Context, t ClientType) (string, error) {
+	token, err := gs.tokenService.Token(c, t)
+	if err != nil {
+		return "", err
+	}
+	return token.PersonalAccess, nil
+}
+
+func (gs *GitHubAPIService) Orgs(c echo.Context, t ClientType) ([]string, error) {
 	ctx := context.Background()
-	client, err := gs.oauthService.Client(c)
+	client, err := gs.Client(c, t)
 	if err != nil {
 		return []string{}, fmt.Errorf("error getting client: %w", err)
 	}
@@ -55,9 +84,9 @@ func (gs *GitHubAPIService) Orgs(c echo.Context) ([]string, error) {
 	return allOrgs, nil
 }
 
-func (gs *GitHubAPIService) Repos(c echo.Context, org string) ([]string, error) {
+func (gs *GitHubAPIService) Repos(c echo.Context, t ClientType, org string) ([]string, error) {
 	ctx := context.Background()
-	client, err := gs.oauthService.Client(c)
+	client, err := gs.Client(c, t)
 	if err != nil {
 		return []string{}, fmt.Errorf("error getting client: %w", err)
 	}
@@ -83,10 +112,25 @@ func (gs *GitHubAPIService) Repos(c echo.Context, org string) ([]string, error) 
 	return allRepos, nil
 }
 
-func (gs *GitHubAPIService) AccessToken(c echo.Context) (string, error) {
-	token, err := gs.oauthService.AccessToken(c)
+func (gs *GitHubAPIService) Scopes(c echo.Context, t ClientType) ([]string, error) {
+	ctx := context.Background()
+	client, err := gs.Client(c, t)
 	if err != nil {
-		return "", err
+		return []string{}, fmt.Errorf("error getting scopes: %w", err)
 	}
-	return token, nil
+	_, resp, err := client.RateLimit.Get(ctx)
+	if err != nil {
+		return []string{}, fmt.Errorf("error getting scopes: %w", err)
+	}
+	scopesStr := resp.Header.Get("x-oauth-scopes")
+	scopes := strings.Split(scopesStr, ", ")
+	return scopes, nil
+}
+
+func (gs *GitHubAPIService) Client(c echo.Context, t ClientType) (*githubClient.Client, error) {
+	token, err := gs.tokenService.Token(c, t)
+	if err != nil {
+		return nil, err
+	}
+	return github.NewClient(nil).WithAuthToken(token.PersonalAccess), nil
 }

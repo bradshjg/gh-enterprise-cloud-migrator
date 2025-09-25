@@ -8,9 +8,13 @@ package views
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
+import (
+	"github.com/bradshjg/gh-enterprise-server-to-enterprise-cloud-migrator/services"
+)
+
 type OrgFormData struct {
-	Orgs   []string
-	Source bool
+	Orgs       []string
+	ClientType services.ClientType
 }
 
 func OrgsForm(data OrgFormData) templ.Component {
@@ -34,7 +38,7 @@ func OrgsForm(data OrgFormData) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		if data.Source {
+		if data.ClientType == services.Source {
 			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div style=\"display: flex; flex-direction: column;\"><label for=\"source-org\">source org</label> <select name=\"source-org\" id=\"source-org\" required hx-get=\"/source-repos\" hx-trigger=\"change\" hx-target=\"#source-repo\" style=\"width: 15em; margin-top: 1em;\"><option></option> ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -47,7 +51,7 @@ func OrgsForm(data OrgFormData) templ.Component {
 				var templ_7745c5c3_Var2 string
 				templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(org)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/orgs.form.templ`, Line: 15, Col: 33}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/orgs.form.templ`, Line: 19, Col: 33}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 				if templ_7745c5c3_Err != nil {
@@ -75,7 +79,7 @@ func OrgsForm(data OrgFormData) templ.Component {
 				var templ_7745c5c3_Var3 string
 				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(org)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/orgs.form.templ`, Line: 29, Col: 29}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/orgs.form.templ`, Line: 33, Col: 29}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 				if templ_7745c5c3_Err != nil {
