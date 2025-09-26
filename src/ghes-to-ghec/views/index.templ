@@ -30,14 +30,13 @@ func tokenURL(clientType services.ClientType) string {
 }
 
 templ runMigrationForm() {
-    <div style="display: flex; flex-direction: column; margin-top: 2em;">
+    <div style="display: flex; flex-direction: column; align-items: center; margin-top: 2em;">
         <button type="submit" hx-post="/run" hx-include="[name='source-org'], [name='source-repo'], [name='target-org']" hx-target="#run-migration" hx-indicator="#run-migration-spinner">
             start migration
         </button>
-    </div>
-    <div id="run-migration">
         <img id="run-migration-spinner" class="htmx-indicator" src="/static/img/bars.svg" width="50" height="50"/>
     </div>
+    <div id="run-migration"></div>
 }
 
 templ token(data AuthenticationData) {
