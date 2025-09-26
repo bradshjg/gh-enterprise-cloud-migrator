@@ -1,6 +1,6 @@
-# gh-enterprise-to-cloud-migrator
+# gh-enterprise-cloud-migrator
 
-Web UI for managing GitHub Enterprise Server to GitHub Enterprise Cloud migrations
+Web UI for managing GitHub Enterprise Cloud migrations
 
 ## How it works
 
