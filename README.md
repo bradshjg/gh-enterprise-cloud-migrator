@@ -1,16 +1,17 @@
 # gh-enterprise-to-cloud-migrator
 
-Web UI for managing GitHub Enterprise to GitHub Enterprise Cloud migrations
+Web UI for managing GitHub Enterprise Server to GitHub Enterprise Cloud migrations
 
 ## How it works
 
-After authenticating to the source and target GitHub instances via OAuth, select repos to migrate.
+After supplying Personal Access Tokens (PATs) for the source and destination, select repos to migrate.
 
-* A script will be generated and run to migrate the selected repos
+* A script will be generated and run to migrate the selected repos, and migration output will be displayed.
+* Tokens are stored at rest client-side in encrypted cookies and only kept in memory server-side for the duration of a migration run.
 
-## Demo
+## Demo (includes narration)
 
-FIXME
+https://github.com/user-attachments/assets/c4a1e61c-d433-4260-82ce-ef876beb66a2
 
 ## Deploying
 
