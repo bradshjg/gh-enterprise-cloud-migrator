@@ -18,11 +18,11 @@ func SessionStore() *sessions.CookieStore {
 
 func sessionKeys() [][]byte {
 	sessionAuthenticationKey := []byte(os.Getenv("SESSION_AUTHENTICATION_KEY"))
-	if sessionAuthenticationKey == nil {
+	if len(sessionAuthenticationKey) == 0 {
 		sessionAuthenticationKey = securecookie.GenerateRandomKey(32)
 	}
 	sessionEncryptionKey := []byte(os.Getenv("SESSION_ENCRYPTION_KEY"))
-	if sessionEncryptionKey == nil {
+	if len(sessionEncryptionKey) == 0 {
 		sessionEncryptionKey = securecookie.GenerateRandomKey(32)
 	}
 	return [][]byte{sessionAuthenticationKey, sessionEncryptionKey}

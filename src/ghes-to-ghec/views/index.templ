@@ -29,13 +29,15 @@ func tokenURL(clientType services.ClientType) string {
     return url
 }
 
-templ indexFormWrapper() {
-    <form method="post" action="/run">
-        {children...}
-        <div style="display: flex; justify-content: center; margin-top: 5em;">
-            <button type="submit">start migration</button>
-        </div>
-    </form>
+templ runMigrationForm() {
+    <div style="display: flex; flex-direction: column; margin-top: 2em;">
+        <button type="submit" hx-post="/run" hx-include="[name='source-org'], [name='source-repo'], [name='target-org']" hx-target="#run-migration" hx-indicator="#run-migration-spinner">
+            start migration
+        </button>
+    </div>
+    <div id="run-migration">
+        <img id="run-migration-spinner" class="htmx-indicator" src="/static/img/bars.svg" width="50" height="50"/>
+    </div>
 }
 
 templ token(data AuthenticationData) {
@@ -51,7 +53,7 @@ templ token(data AuthenticationData) {
 }
 
 templ clearTokensForm() {
-    <form method="post" action="/tokens/reset" style="display: flex; justify-content: center; margin-top: 2em;">
+    <form method="post" action="/tokens/reset" style="margin-top: 2em;">
         <button type="submit">reset tokens</button>
     </form>
 }
@@ -86,15 +88,14 @@ templ indexContent(data IndexData) {
 
 templ Index(data IndexData) {
 	@Base() {
-        if (data.Source.Valid && data.Target.Valid) {
-            @indexFormWrapper() {
-                @indexContent(data)
-            }
-        } else {
-		    @indexContent(data)
-        }
+		@indexContent(data)
+        <div style="display: flex; flex-direction: column; align-items: center; width: 80%; margin-left: auto; margin-right: auto;">
         if (data.Source.Exists || data.Target.Exists) {
             @clearTokensForm()
         }
+        if (data.Source.Valid && data.Target.Valid) {
+            @runMigrationForm()
+        }
+        </div>
 	}
 }
