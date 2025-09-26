@@ -27,11 +27,11 @@ FROM golang:latest AS build
 
 WORKDIR /src
 
-COPY src/ghes-to-ghec/go.mod src/ghes-to-ghec/go.sum .
+COPY src/ghec-migrator/go.mod src/ghec-migrator/go.sum .
 RUN go mod download
 
-COPY src/ghes-to-ghec/ .
-RUN CGO_ENABLED=0 GOOS=linux go build -o /ghes-to-ghec
+COPY src/ghec-migrator/ .
+RUN CGO_ENABLED=0 GOOS=linux go build -o /ghec-migrator
 
 FROM registry.access.redhat.com/ubi9/ubi AS release
 
@@ -44,10 +44,10 @@ RUN dnf install -y https://github.com/PowerShell/PowerShell/releases/download/v7
 
 COPY --from=dev /usr/bin/gh /usr/bin/gh
 COPY --from=dev /home/vscode/.local/share/gh/extensions/gh-gei ${HOME}/.local/share/gh/extensions/gh-gei
-COPY --from=build /ghes-to-ghec /ghes-to-ghec
+COPY --from=build /ghec-migrator /ghec-migrator
 
 EXPOSE 8080
 
 USER default
 
-ENTRYPOINT ["/ghes-to-ghec"]
+ENTRYPOINT ["/ghec-migrator"]

@@ -1,4 +1,4 @@
-module github.com/bradshjg/gh-enterprise-server-to-enterprise-cloud-migrator
+module github.com/bradshjg/ghec-migrator
 
 go 1.24.6
 

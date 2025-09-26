@@ -9,7 +9,7 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"github.com/bradshjg/gh-enterprise-server-to-enterprise-cloud-migrator/services"
+	"github.com/bradshjg/ghec-migrator/services"
 )
 
 type OrgFormData struct {

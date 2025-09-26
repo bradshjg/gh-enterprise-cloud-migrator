@@ -15,13 +15,15 @@ https://github.com/user-attachments/assets/c4a1e61c-d433-4260-82ce-ef876beb66a2
 
 ## Deploying
 
-In addition to the `ghes-to-ghec` binary that starts the webserver, you'll need:
+In addition to the `ghec-migrator` binary that starts the webserver, you'll need:
 
 * `gh` and `gh gei` available on your `PATH`
 * `pwsh` (PowerShell) available on your `PATH`
 * environment variable configuration (see `.env.example`)
 
 See the included `Dockerfile` as a starting point
+
+> In order to install `gh gei` you'll need to pass a GitHub token as a build secret.
 
 ## Acknowledgements
 

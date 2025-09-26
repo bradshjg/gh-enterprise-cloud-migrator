@@ -3,8 +3,8 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/bradshjg/gh-enterprise-server-to-enterprise-cloud-migrator/services"
-	"github.com/bradshjg/gh-enterprise-server-to-enterprise-cloud-migrator/views"
+	"github.com/bradshjg/ghec-migrator/services"
+	"github.com/bradshjg/ghec-migrator/views"
 	"github.com/labstack/echo/v4"
 )
 

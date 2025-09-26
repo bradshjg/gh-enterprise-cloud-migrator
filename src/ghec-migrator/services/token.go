@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	sessionName = "ghes-to-ghec"
+	sessionName = "ghec-migrator"
 )
 
 var ErrTokenNotFound = errors.New("missing token")

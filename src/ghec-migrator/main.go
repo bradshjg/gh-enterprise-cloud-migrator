@@ -4,9 +4,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/bradshjg/gh-enterprise-server-to-enterprise-cloud-migrator/handlers"
-	migratorMiddleware "github.com/bradshjg/gh-enterprise-server-to-enterprise-cloud-migrator/middleware"
-	"github.com/bradshjg/gh-enterprise-server-to-enterprise-cloud-migrator/services"
+	"github.com/bradshjg/ghec-migrator/handlers"
+	migratorMiddleware "github.com/bradshjg/ghec-migrator/middleware"
+	"github.com/bradshjg/ghec-migrator/services"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 )

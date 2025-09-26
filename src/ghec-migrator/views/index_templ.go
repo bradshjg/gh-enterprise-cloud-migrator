@@ -11,7 +11,7 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	"os"
 
-	"github.com/bradshjg/gh-enterprise-server-to-enterprise-cloud-migrator/services"
+	"github.com/bradshjg/ghec-migrator/services"
 )
 
 type AuthenticationData struct {
