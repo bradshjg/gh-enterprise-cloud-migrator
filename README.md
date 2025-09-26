@@ -8,6 +8,10 @@ After authenticating to the source and target GitHub instances via OAuth, select
 
 * A script will be generated and run to migrate the selected repos
 
+## Demo
+
+FIXME
+
 ## Deploying
 
 In addition to the `ghes-to-ghec` binary that starts the webserver, you'll need:
