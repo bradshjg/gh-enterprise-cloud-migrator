@@ -1,6 +1,7 @@
 package views
 
 import (
+    "fmt"
     "os"
 
     "github.com/bradshjg/ghec-migrator/services"
@@ -20,13 +21,13 @@ type IndexData struct {
 
 func tokenURL(clientType services.ClientType) string {
     var url string
-    if clientType == services.Source {
-        url = os.Getenv("GITHUB_SOURCE_TOKEN_URL")
-    }
-    if url == "" {
-        return "https://github.com/settings/tokens/new"
-    }
-    return url
+	if clientType == services.Source {
+		url = os.Getenv("GITHUB_ENTERPRISE_SOURCE_URL")
+	}
+	if url == "" {
+		url = "https://github.com"
+	}
+	return fmt.Sprintf("%s/settings/tokens/new", url)
 }
 
 templ runMigrationForm() {

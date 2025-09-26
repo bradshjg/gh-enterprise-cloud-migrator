@@ -122,9 +122,9 @@ func (ms *MigratorServiceImpl) run(m Migration) error {
 		"--github-source-org", m.SourceOrg,
 		"--github-target-org", m.TargetOrg,
 	}
-	ghesApiUrl := os.Getenv("GITHUB_SOURCE_API_URL")
-	if ghesApiUrl != "" {
-		defaultArgs = append(defaultArgs, "--ghes-api-url", ghesApiUrl)
+	ghesUrl := os.Getenv("GITHUB_ENTERPRISE_SOURCE_URL")
+	if ghesUrl != "" {
+		defaultArgs = append(defaultArgs, "--ghes-api-url", fmt.Sprintf("%s/api/v3", ghesUrl))
 	}
 	migrateScript := "migrate"
 	ghCLICmd := "gh"

@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/google/go-github/v74/github"
@@ -44,7 +45,7 @@ func (gs *GitHubAPIService) Token(c echo.Context, t ClientType) (string, error) 
 
 func (gs *GitHubAPIService) Orgs(c echo.Context, t ClientType) ([]string, error) {
 	ctx := context.Background()
-	client, err := gs.Client(c, t)
+	client, err := gs.client(c, t)
 	if err != nil {
 		return []string{}, fmt.Errorf("error getting client: %w", err)
 	}
@@ -70,7 +71,7 @@ func (gs *GitHubAPIService) Orgs(c echo.Context, t ClientType) ([]string, error)
 
 func (gs *GitHubAPIService) Repos(c echo.Context, t ClientType, org string) ([]string, error) {
 	ctx := context.Background()
-	client, err := gs.Client(c, t)
+	client, err := gs.client(c, t)
 	if err != nil {
 		return []string{}, fmt.Errorf("error getting client: %w", err)
 	}
@@ -98,7 +99,7 @@ func (gs *GitHubAPIService) Repos(c echo.Context, t ClientType, org string) ([]s
 
 func (gs *GitHubAPIService) Scopes(c echo.Context, t ClientType) ([]string, error) {
 	ctx := context.Background()
-	client, err := gs.Client(c, t)
+	client, err := gs.client(c, t)
 	if err != nil {
 		return []string{}, fmt.Errorf("error getting scopes: %w", err)
 	}
@@ -111,10 +112,15 @@ func (gs *GitHubAPIService) Scopes(c echo.Context, t ClientType) ([]string, erro
 	return scopes, nil
 }
 
-func (gs *GitHubAPIService) Client(c echo.Context, t ClientType) (*githubClient.Client, error) {
+func (gs *GitHubAPIService) client(c echo.Context, t ClientType) (*githubClient.Client, error) {
 	token, err := gs.tokenService.Token(c, t)
 	if err != nil {
 		return nil, err
 	}
-	return github.NewClient(nil).WithAuthToken(token.PersonalAccess), nil
+	client := github.NewClient(nil).WithAuthToken(token.PersonalAccess)
+	enterpriseSource := os.Getenv("GITHUB_ENTERPRISE_SOURCE_URL")
+	if enterpriseSource != "" {
+		client.WithEnterpriseURLs(enterpriseSource, enterpriseSource)
+	}
+	return client, nil
 }
